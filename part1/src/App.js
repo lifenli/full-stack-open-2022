@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "./Header";
-import Content from "./Content";
+import Part from "./Part";
 import Total from "./Total";
 
 
@@ -13,9 +13,9 @@ const App = () => {
   return (
     <div>
       <Header name={course} />
-      <Content part={parts[0]} exercise={exercises[0]} />
-      <Content part={parts[1]} exercise={exercises[1]} />
-      <Content part={parts[2]} exercise={exercises[2]} />
+      <Part part={parts[0]} exercise={exercises[0]} />
+      <Part part={parts[1]} exercise={exercises[1]} />
+      <Part part={parts[2]} exercise={exercises[2]} />
       <Total amount={amount} />
     </div >
   )
