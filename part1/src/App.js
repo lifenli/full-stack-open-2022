@@ -38,9 +38,9 @@ const Stats = (props) => {
 
           <Display rating="all" value={values[3]} />
 
-          <Display rating="average" value={values[4]} />
+          <Display rating="average" value={values[4].toFixed(2)} />
 
-          <Display rating="positive" value={values[5]} />
+          <Display rating="positive" value={(values[5]).toFixed(2) + ' %'} />
 
         </table>
       </div>
@@ -71,7 +71,7 @@ const App = () => {
       < Button handleClick={() => setToGood(good)} text="good" />
       < Button handleClick={() => setToNeutral(neutral)} text="neutral" />
       < Button handleClick={() => setToBad(bad)} text="bad" />
-      <Stats header="Statics" good={good} neutral={neutral} bad={bad} all={good + neutral + bad} average={(good + neutral + bad) / 3} positive={(good / (good + neutral + bad) * 100) + '%'} />
+      <Stats header="Statics" good={good} neutral={neutral} bad={bad} all={good + neutral + bad} average={(good + neutral + bad) / 3} positive={(good / (good + neutral + bad) * 100)} />
     </div>
   )
 
