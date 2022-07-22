@@ -27,7 +27,7 @@ const Stats = (props) => {
 
     return (
       <div>
-        <p>{props.header}</p>
+        <h2>{props.header}</h2>
         <table>
 
           <Display rating="good" value={values[0]} />
