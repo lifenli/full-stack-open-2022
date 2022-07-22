@@ -7,13 +7,51 @@ const Button = (props) => {
     </div>
   )
 }
-const Stats = (props) => {
+
+const Display = (props) => {
   return (
-    <div>
-      {props.rating} {props.total}
-    </div>
+    <tbody>
+      <tr>
+        <td>{props.rating}</td>
+        <td>{props.value} </td>
+      </tr>
+    </tbody>
   )
+
 }
+
+const Stats = (props) => {
+
+  const values = [props.good, props.neutral, props.bad, props.all, props.average, props.positive]
+  if (props.all !== 0) {
+
+    return (
+      <div>
+        <p>{props.header}</p>
+        <table>
+
+          <Display rating="good" value={values[0]} />
+
+          <Display rating="neutral" value={values[1]} />
+
+          <Display rating="bad" value={values[2]} />
+
+          <Display rating="all" value={values[3]} />
+
+          <Display rating="average" value={values[4]} />
+
+          <Display rating="positive" value={values[5]} />
+
+        </table>
+      </div>
+    )
+  } else {
+    return (
+      <h2>No feedback given</h2>
+    )
+  }
+}
+
 
 
 const App = () => {
@@ -21,23 +59,22 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-  // const [total, setTotal] = useState(0)
+
+  const setToGood = newValue => setGood(newValue + 1)
+  const setToNeutral = newValue => setNeutral(newValue + 1)
+  const setToBad = newValue => setBad(newValue + 1)
+
 
   return (
     <div>
       <h1>Give Feeback</h1>
-      < Button handleClick={() => setGood(good + 1)} text="good" />
-      < Button handleClick={() => setNeutral(neutral + 1)} text="neutral" />
-      < Button handleClick={() => setBad(bad + 1)} text="bad" />
-      <h2>Statistics</h2>
-      <Stats rating={'good'} total={good} />
-      <Stats rating={'neutral'} total={neutral} />
-      <Stats rating={'bad'} total={bad} />
-      <p>all {good + neutral + bad} </p>
-      <p>Average {(good + neutral + bad) / 3}  </p>
-      <p>Positive {good / (good + neutral + bad) * 100} %</p>
+      < Button handleClick={() => setToGood(good)} text="good" />
+      < Button handleClick={() => setToNeutral(neutral)} text="neutral" />
+      < Button handleClick={() => setToBad(bad)} text="bad" />
+      <Stats header="Statics" good={good} neutral={neutral} bad={bad} all={good + neutral + bad} average={(good + neutral + bad) / 3} positive={(good / (good + neutral + bad) * 100) + '%'} />
     </div>
   )
+
 }
 
 export default App
