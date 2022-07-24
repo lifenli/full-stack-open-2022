@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+
 const Button = (props) => {
   return (
     <p>
@@ -20,21 +21,41 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.'
   ]
 
+  const n = anecdotes.length
+  const votesArr = Array(n).fill(0) //  create a zero-filled array of a desired length
+  const newArr = [...votesArr] // not to muate the original array
+
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(0)
+  const [arr, setArr] = useState(newArr) //assing the newArr value to arr
+
   function randomNum(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-  const handleClick = (min, max) => setSelected(randomNum(min, max));
+  const updateVotes = (i) => {
+    setVotes(votes + 1)
+    arr[i] += 1  // on each click arr[i] add 1 to it
+    setArr(arr)  // arr got updated, reassign the value to arr after the update
+  }
+
+  const handleClick = (min, max) => {
+    setSelected(randomNum(min, max))
+
+  }
 
   return (
     <div>
       {anecdotes[selected]}
+      <p>has {arr[selected]} votes</p>
+      <Button handleClick={() => updateVotes(selected)} text="vote" />
       <Button handleClick={() => handleClick(0, anecdotes.length - 1)} text="anecDotes" />
     </div>
   )
+
 }
+
 
 export default App
