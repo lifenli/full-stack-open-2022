@@ -3,14 +3,15 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    {
-      name: 'Arto Hellas',
-      number: '121 - 1212 - 1212'
-    }
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ])
 
   const [newName, setNewName] = useState('')
   const [number, setNumber] = useState('')
+  const [searchName, setSearchName] = useState('')
 
 
   const handleNameChange = (event) => {
@@ -21,6 +22,9 @@ const App = () => {
     setNumber(event.target.value)
   }
 
+  const handleSearch = (event) => {
+    setSearchName(event.target.value);
+  }
 
   const handleButtonSubmit = (event) => {
     event.preventDefault();
@@ -34,9 +38,27 @@ const App = () => {
       : setPersons(persons.concat(newPersonObj)); setNewName(''); setNumber('');
   }
 
+  const showFilter =
+    persons.find(person => person.name.toLowerCase() === searchName.toLowerCase())
+      // if the searchName matches the one in the persons array (case insensitive)
+      ? persons.filter(person => person.name.toLowerCase() === searchName.toLowerCase())
+      : persons
+
+  const ListPersons = ({ persons }) => {
+    return (
+      persons.map(person =>
+        <p key={person.id}>{person.name} {person.number} </p>
+      )
+    )
+  }
+
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <p>
+        Filter shown with <input onChange={handleSearch} value={searchName} />
+      </p>
       <form>
         <div>
           name: <input onChange={handleNameChange} value={newName} />
@@ -47,10 +69,7 @@ const App = () => {
           <button onClick={handleButtonSubmit} type="submit">add</button>
         </div>
       </form>
-      <div>{persons.map(person =>
-        <p key={person.name}> {person.name} {person.number}</p>
-      )}
-      </div>
+      <ListPersons persons={showFilter} />
     </div>
   )
 }
