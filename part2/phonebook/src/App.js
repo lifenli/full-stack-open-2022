@@ -1,14 +1,19 @@
+
 import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas' }
   ])
+
   const [newName, setNewName] = useState('')
+  // const [buttonSubmit, setButtonSubmit] = useState(true)
+
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
+
 
   const handleButtonSubmit = (event) => {
     event.preventDefault();
@@ -16,11 +21,11 @@ const App = () => {
     const newPersonObj = {
       name: newName,
     }
-    setPersons(persons.concat(newPersonObj))
-    console.log(persons.concat(newPersonObj))
-    console.log(persons);
-    setNewName('')
+    persons.find(person => person.name === newPersonObj.name)
+      ? alert(`${newName} is already added to phonebook`)
+      : setPersons(persons.concat(newPersonObj)); setNewName('')
   }
+
   return (
     <div>
       <h2>Phonebook</h2>
