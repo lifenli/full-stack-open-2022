@@ -1,13 +1,14 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 function App() {
   const [value, setValue] = useState('')
   const [countries, setCountries] = useState([])
 
-  axios
-    .get('https://restcountries.com/v3.1/all')
+  useEffect(() => {
+    axios
+      .get('https://restcountries.com/v3.1/all')
     .then(response => {
       const countryList = response.data.map(country => ({
         country: country.name.common,
@@ -20,6 +21,8 @@ function App() {
       setCountries(countryList)
     }
     )
+  }, [])
+
 
   const handleFilter = (event) => {
     setValue(event.target.value)
@@ -30,31 +33,22 @@ function App() {
   console.log(newList);
 
 
-  const CountryInfo = ({ list }) => {
-    return (
-      <div>
-        {list.map(country =>
-          <p key={country.country}>{country.country}</p>)
-        }
-      </div>
-    )
-  }
-
-  const SingleCountry = ({ list }) => {
+  const SingleCountry = ({ list, i }) => {
+    console.log(list[i]);
     return (
       <>
-        <h1> {list[0].country}</h1>
-        <p> capital {list[0].capital}</p>
-        <p> area {list[0].area}</p>
+        <h1> {list[i].country}</h1>
+        <p> capital {list[i].capital}</p>
+        <p> area {list[i].area}</p>
         <div>
           <h2>Languages</h2>
-          {Object.values(list[0].languages).map(language =>
+          {Object.values(list[i].languages).map((language) =>
             <ul>
-              <li key={language.language}> {language} </li>
+              <li key={i.toString()}> {language} </li>
             </ul>)
           }
         </div>
-        <img src={list[0].flag} alt="map" width="100px" />
+        <img src={list[i].flag} alt="map" width="100px" />
       </>
 
 
@@ -62,15 +56,34 @@ function App() {
   }
 
 
+  const CountryInfo = ({ list }) => {
+    const [show, setShow] = useState(false)
+    const [ind, setInde] = useState('')
+    const handleClick = (country) => {
+      setShow(true)
+      setInde(list.indexOf(country))
+    }
+
+    return (
+      <div>
+        {list.map((country) =>
+          <div key={country.country} >{country.country} <button onClick={() => handleClick(country)}> show </button>
+          </div>
+        )}
+        {show && <SingleCountry list={list} i={ind} />}
+      </div >
+    )
+  }
+
   return (
     <div className="App">
       <p>find counries <input onChange={handleFilter} value={value} /></p>
-      <div>
-        {newList.length === 1 && <SingleCountry list={newList} />}
-        {newList.length > 10 && value && <p>"Too many matches, specify another filter"</p>}
-        {newList.length <= 10 && newList.length > 1 && <CountryInfo list={newList} />}
 
-      </div >
+      {newList.length === 1 && <SingleCountry list={newList} i="0" />}
+      {newList.length > 10 && value && <p>"Too many matches, specify another filter"</p>}
+      {newList.length <= 10 && newList.length > 1 && <CountryInfo list={newList} />}
+
+
     </div >
   )
 }
