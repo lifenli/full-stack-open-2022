@@ -3,7 +3,7 @@ import PersonsForm from './Components/PersonForm'
 import ListPersons from './Components/ListPersons'
 import Filter from './Components/Filter'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 
 
@@ -14,12 +14,9 @@ const App = () => {
   const [persons, setPersons] = useState([])
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log(response.data);
-        setPersons(response.data)
-      })
+    personService
+      .getAll()
+      .then(initalData => setPersons(initalData))
   }, [])
 
   const handleNameChange = (event) => {
@@ -33,6 +30,48 @@ const App = () => {
     setSearchName(event.target.value)
   }
 
+  const handleButtonSubmit = (event) => {
+    event.preventDefault();
+    const newPersonObj = {
+      name: newName,
+      number: number,
+    }
+    const existPerson = persons.find(person => person.name === newName)
+    const changedPerson = { ...existPerson, number: newPersonObj.number }
+    function updateNumber() {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old one with a new one?`)) {
+        personService
+          .update(existPerson.id, changedPerson)
+          .then(returnedPerson => setPersons(persons.map(person => person.id !== existPerson.id ? person : returnedPerson)))
+        setNewName('');
+        setNumber('')
+      }
+    }
+
+    persons.find(person => person.name === newPersonObj.name)
+      ? updateNumber()
+      : personService
+        .create(newPersonObj)
+        .then(returnedObj => {
+          setPersons(persons.concat(returnedObj)); setNewName(''); setNumber('');
+        }
+        )
+  }
+
+  const handleDelete = (e) => {
+    const buttonId = parseInt(e.target.id)
+    const targetPerson = persons.find(person => person.id === buttonId)
+    const targetName = targetPerson.name
+    if (window.confirm(`Delete ${targetName}?`)) {
+      personService
+        .remove(targetPerson.id)
+      personService
+        .getAll()
+        .then(returnedPersons => setPersons(returnedPersons))
+
+    }
+  }
+
   const showFilter =
     persons.find(person => person.name.toLowerCase() === searchName.toLowerCase())
       // if the searchName matches the one in the persons array (case insensitive)
@@ -42,25 +81,12 @@ const App = () => {
   // Do NOT alter the "persons" value by setPersons() ...
 
 
-  const handleButtonSubmit = (event) => {
-    event.preventDefault();
-    const newPersonObj = {
-      name: newName,
-      number: number,
-      id: persons.length + 1
-    }
-    persons.find(person => person.name === newPersonObj.name)
-      ? alert(`${newName} is already added to phonebook`)
-      : setPersons(persons.concat(newPersonObj)); setNewName(''); setNumber('');
-  }
-
-
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter handleSearch={handleSearch} value={searchName} />
       <PersonsForm handleButtonSubmit={handleButtonSubmit} handleNameChange={handleNameChange} handleNumChange={handleNumChange} nameValue={newName} numValue={number} />
-      <ListPersons list={showFilter} />
+      <ListPersons list={showFilter} handleDelete={handleDelete} />
       {/* the value depends on the filter */}
 
     </div>
