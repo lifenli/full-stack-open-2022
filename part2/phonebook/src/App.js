@@ -43,6 +43,7 @@ const App = () => {
         personService
           .update(existPerson.id, changedPerson)
           .then(returnedPerson => setPersons(persons.map(person => person.id !== existPerson.id ? person : returnedPerson)))
+          .catch(e => alert(`${newName} was deleted from the server`))
         setNewName('');
         setNumber('')
       }
@@ -55,7 +56,7 @@ const App = () => {
         .then(returnedObj => {
           setPersons(persons.concat(returnedObj)); setNewName(''); setNumber('');
         }
-        )
+        ).catch(e => console.log(e))
   }
 
   const handleDelete = (e) => {
@@ -68,7 +69,6 @@ const App = () => {
       personService
         .getAll()
         .then(returnedPersons => setPersons(returnedPersons))
-
     }
   }
 

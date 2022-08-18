@@ -26,24 +26,14 @@
       "id": 5
     },
     {
-      "name": "Jimmy",
-      "number": "12321555121",
-      "id": 6
-    },
-    {
       "name": "Roger",
       "number": "189271213",
       "id": 7
     },
     {
-      "name": "Eva",
-      "number": "91871762123",
-      "id": 9
-    },
-    {
-      "name": "Wendy",
-      "number": "12314125151",
-      "id": 10
+      "name": "Jim",
+      "number": "2312312312",
+      "id": 8
     }
   ]
 }
