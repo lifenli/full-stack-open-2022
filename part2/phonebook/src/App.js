@@ -12,6 +12,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [number, setNumber] = useState('')
   const [persons, setPersons] = useState([])
+  const [msg, setMsg] = useState(null)
+  const [style, setStyle] = useState(null)
 
   useEffect(() => {
     personService
@@ -30,6 +32,39 @@ const App = () => {
     setSearchName(event.target.value)
   }
 
+  const msgStyle = {
+    color: 'green',
+    border: '2px solid green',
+    padding: '3px',
+    margin: '5px',
+    backgroundColor: '#ccc',
+    fontSize: 16,
+    borderRadius: 5
+  }
+
+  const errStyle = {
+    color: 'red',
+    border: '2px solid red',
+    padding: '3px',
+    margin: '5px',
+    backgroundColor: '#ccc',
+    fontSize: 16,
+    borderRadius: 5
+  }
+
+  const Notification = ({ message, notifStyle }) => {
+
+    if (message === null) {
+      return null
+    }
+    return (
+      <div style={notifStyle}>
+        {message}
+      </div>
+    )
+  }
+
+
   const handleButtonSubmit = (event) => {
     event.preventDefault();
     const newPersonObj = {
@@ -43,7 +78,10 @@ const App = () => {
         personService
           .update(existPerson.id, changedPerson)
           .then(returnedPerson => setPersons(persons.map(person => person.id !== existPerson.id ? person : returnedPerson)))
-          .catch(e => alert(`${newName} was deleted from the server`))
+          .catch(e => {
+            setMsg(`Information of ${newName} has already been removed from server. `, e);
+            setStyle(errStyle)
+          })
         setNewName('');
         setNumber('')
       }
@@ -55,8 +93,13 @@ const App = () => {
         .create(newPersonObj)
         .then(returnedObj => {
           setPersons(persons.concat(returnedObj)); setNewName(''); setNumber('');
+          setMsg(`Added ${newName}`)
+          setStyle(msgStyle)
+          setTimeout(() => {
+            setMsg(null)
+          }, 5000)
         }
-        ).catch(e => console.log(e))
+        ).catch(e => setMsg(`Cant add ${newName}` + e))
   }
 
   const handleDelete = (e) => {
@@ -84,6 +127,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={msg} notifStyle={style} />
       <Filter handleSearch={handleSearch} value={searchName} />
       <PersonsForm handleButtonSubmit={handleButtonSubmit} handleNameChange={handleNameChange} handleNumChange={handleNumChange} nameValue={newName} numValue={number} />
       <ListPersons list={showFilter} handleDelete={handleDelete} />
