@@ -103,7 +103,8 @@ const App = () => {
   }
 
   const handleDelete = (e) => {
-    const buttonId = parseInt(e.target.id)
+    const buttonId = e.target.id.toString()
+    console.log(buttonId);
     const targetPerson = persons.find(person => person.id === buttonId)
     const targetName = targetPerson.name
     if (window.confirm(`Delete ${targetName}?`)) {
