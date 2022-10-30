@@ -77,13 +77,17 @@ const App = () => {
       if (window.confirm(`${newName} is already added to phonebook, replace the old one with a new one?`)) {
         personService
           .update(existPerson.id, changedPerson)
-          .then(returnedPerson => setPersons(persons.map(person => person.id !== existPerson.id ? person : returnedPerson)))
-          .catch(e => {
-            setMsg(`Information of ${newName} has already been removed from server. `, e);
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== existPerson.id ? person : returnedPerson))
+            setMsg(`${newName} is updated!`);
+            setStyle(msgStyle);
+          })
+          .catch(error => {
             setStyle(errStyle)
+            setMsg(error.response.data.error);
           })
         setNewName('');
-        setNumber('')
+        setNumber('');
       }
     }
 
@@ -98,8 +102,12 @@ const App = () => {
           setTimeout(() => {
             setMsg(null)
           }, 5000)
-        }
-        ).catch(e => setMsg(`Cant add ${newName}` + e))
+        })
+        .catch(error => {
+          setStyle(errStyle)
+          setMsg(error.response.data.error)
+          // console.log(error.response.data.error)
+        })
   }
 
   const handleDelete = (e) => {
